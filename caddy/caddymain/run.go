@@ -20,7 +20,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -99,7 +98,7 @@ func Run() {
 	case "stderr":
 		log.SetOutput(os.Stderr)
 	case "":
-		log.SetOutput(ioutil.Discard)
+		log.SetOutput(io.Discard)
 	default:
 		if logRollMB > 0 {
 			log.SetOutput(&lumberjack.Logger{
@@ -258,7 +257,7 @@ func confLoader(serverType string) (caddy.Input, error) {
 		contents = []byte("import " + conf)
 	} else {
 		var err error
-		contents, err = ioutil.ReadFile(conf)
+		contents, err = os.ReadFile(conf)
 		if err != nil {
 			return nil, err
 		}
@@ -273,7 +272,7 @@ func confLoader(serverType string) (caddy.Input, error) {
 
 // defaultLoader loads the Caddyfile from the current working directory.
 func defaultLoader(serverType string) (caddy.Input, error) {
-	contents, err := ioutil.ReadFile(caddy.DefaultConfigFile)
+	contents, err := os.ReadFile(caddy.DefaultConfigFile)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, nil
@@ -310,7 +309,7 @@ func getBuildModule() *debug.Module {
 
 func checkJSONCaddyfile() {
 	if fromJSON {
-		jsonBytes, err := ioutil.ReadAll(os.Stdin)
+		jsonBytes, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Read stdin failed: %v", err)
 			os.Exit(1)
@@ -324,7 +323,7 @@ func checkJSONCaddyfile() {
 		os.Exit(0)
 	}
 	if toJSON {
-		caddyfileBytes, err := ioutil.ReadAll(os.Stdin)
+		caddyfileBytes, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Read stdin failed: %v", err)
 			os.Exit(1)
@@ -433,7 +432,7 @@ func initTelemetry() error {
 			log.Printf("[ERROR] Persisting instance UUID: %v", err)
 			return id
 		}
-		err = ioutil.WriteFile(uuidFilename, []byte(id.String()), 0600) // human-readable as a string
+		err = os.WriteFile(uuidFilename, []byte(id.String()), 0600) // human-readable as a string
 		if err != nil {
 			log.Printf("[ERROR] Persisting instance UUID: %v", err)
 		}
@@ -451,7 +450,7 @@ func initTelemetry() error {
 		id = newUUID()
 	} else {
 		defer uuidFile.Close()
-		uuidBytes, err := ioutil.ReadAll(uuidFile)
+		uuidBytes, err := io.ReadAll(uuidFile)
 		if err != nil {
 			log.Printf("[ERROR] Reading persistent UUID: %v", err)
 			id = newUUID()

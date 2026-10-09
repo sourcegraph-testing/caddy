@@ -18,7 +18,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/go-acme/lego/challenge/tlsalpn01"
@@ -213,7 +213,7 @@ func (c *Config) buildStandardTLSConfig() error {
 			clientCertsAdded[caFile] = struct{}{}
 
 			// Any client with a certificate from this CA will be allowed to connect
-			caCrt, err := ioutil.ReadFile(caFile)
+			caCrt, err := os.ReadFile(caFile)
 			if err != nil {
 				return err
 			}

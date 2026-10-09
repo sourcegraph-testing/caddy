@@ -16,7 +16,6 @@ package caddytls
 
 import (
 	"crypto/tls"
-	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -29,16 +28,16 @@ import (
 func TestMain(m *testing.M) {
 	// Write test certificates to disk before tests, and clean up
 	// when we're done.
-	err := ioutil.WriteFile(certFile, testCert, 0644)
+	err := os.WriteFile(certFile, testCert, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = ioutil.WriteFile(keyFile, testKey, 0644)
+	err = os.WriteFile(keyFile, testKey, 0644)
 	if err != nil {
 		os.Remove(certFile)
 		log.Fatal(err)
 	}
-	err = ioutil.WriteFile(caCertFile, caCert, 0644)
+	err = os.WriteFile(caCertFile, caCert, 0644)
 	if err != nil {
 		os.Remove(keyFile)
 		os.Remove(certFile)
@@ -54,7 +53,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestSetupParseBasic(t *testing.T) {
-	tmpdir, err := ioutil.TempDir("", "caddytls_setup_test_")
+	tmpdir, err := os.MkdirTemp("", "caddytls_setup_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -140,7 +139,7 @@ func TestSetupParseWithOptionalParams(t *testing.T) {
             alpn http/1.1
         }`
 
-	tmpdir, err := ioutil.TempDir("", "caddytls_setup_test_")
+	tmpdir, err := os.MkdirTemp("", "caddytls_setup_test_")
 	if err != nil {
 		t.Fatal(err)
 	}
