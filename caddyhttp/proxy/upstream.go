@@ -20,12 +20,12 @@ import (
 	"crypto/x509"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"net/textproto"
 	"net/url"
+	"os"
 	"path"
 	"regexp"
 	"strconv"
@@ -531,7 +531,7 @@ func parseBlock(c *caddyfile.Dispenser, u *staticUpstream, hasSrv bool) error {
 			caCertificatesAdded[caFile] = struct{}{}
 
 			// any client with a certificate from this CA will be allowed to connect
-			caCrt, err := ioutil.ReadFile(caFile)
+			caCrt, err := os.ReadFile(caFile)
 			if err != nil {
 				return c.Err(err.Error())
 			}
@@ -633,7 +633,7 @@ func (u *staticUpstream) healthCheck() {
 					return true
 				}
 				defer func() {
-					if _, err := io.Copy(ioutil.Discard, r.Body); err != nil {
+					if _, err := io.Copy(io.Discard, r.Body); err != nil {
 						log.Println("[ERROR] failed to copy: ", err)
 					}
 					_ = r.Body.Close()
@@ -646,7 +646,7 @@ func (u *staticUpstream) healthCheck() {
 				}
 				// TODO ReadAll will be replaced if deemed necessary
 				//      See https://github.com/caddyserver/caddy/pull/1691
-				buf, err := ioutil.ReadAll(r.Body)
+				buf, err := io.ReadAll(r.Body)
 				if err != nil {
 					return true
 				}
