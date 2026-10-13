@@ -19,7 +19,6 @@ import (
 	"crypto/tls"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -399,7 +398,7 @@ func loadCertsInDir(cfg *Config, c *caddy.Controller, dir string) error {
 			certBuilder, keyBuilder := new(bytes.Buffer), new(bytes.Buffer)
 			var foundKey bool // use only the first key in the file
 
-			bundle, err := ioutil.ReadFile(path)
+			bundle, err := os.ReadFile(path)
 			if err != nil {
 				return err
 			}

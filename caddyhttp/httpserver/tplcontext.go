@@ -18,7 +18,7 @@ import (
 	"bytes"
 	"crypto/rand"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	mathrand "math/rand"
 	"net"
@@ -301,7 +301,7 @@ func ContextInclude(filename string, ctx interface{}, fs http.FileSystem) (strin
 	}
 	defer file.Close()
 
-	body, err := ioutil.ReadAll(file)
+	body, err := io.ReadAll(file)
 	if err != nil {
 		return "", err
 	}
